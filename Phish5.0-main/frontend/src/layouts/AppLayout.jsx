@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   Shield, LayoutDashboard, Mail, Target, BookOpen,
   TrendingUp, Map, AlertTriangle, Users, LogOut,
-  Menu, X, ChevronRight, Bell, Settings, FileText, Zap, Brain
+  Menu, X, ChevronRight, Bell, Settings, FileText, Zap, Brain, CreditCard
 } from 'lucide-react'
 import { useAuth } from '../services/AuthContext'
 
@@ -20,6 +20,7 @@ const navItems = [
   { path: '/ai-risk-prediction', icon: Brain, label: 'AI Risk Prediction' },
   { path: '/threat-map', icon: Map, label: 'Threat Intelligence' },
   { path: '/threats', icon: AlertTriangle, label: 'Community Reports' },
+  { path: '/billing', icon: CreditCard, label: 'Billing & Plans' },
 ]
 
 export default function AppLayout({ children }) {

@@ -14,6 +14,7 @@ import RiskScoring from './pages/RiskScoring'
 import AIRiskPrediction from './pages/AIRiskPrediction'
 import ThreatIntelligenceMap from './pages/ThreatIntelligenceMap'
 import CommunityThreats from './pages/CommunityThreats'
+import Billing from './pages/Billing'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -60,6 +61,7 @@ export default function App() {
           <Route path="/ai-risk-prediction" element={<ProtectedRoute><AIRiskPrediction /></ProtectedRoute>} />
           <Route path="/threat-map" element={<ProtectedRoute><ThreatIntelligenceMap /></ProtectedRoute>} />
           <Route path="/threats" element={<ProtectedRoute><CommunityThreats /></ProtectedRoute>} />
+          <Route path="/billing" element={<ProtectedRoute><Billing /></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </AuthProvider>
