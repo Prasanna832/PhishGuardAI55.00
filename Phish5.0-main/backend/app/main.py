@@ -4,6 +4,7 @@ from app.database import engine, Base
 import app.models  # noqa: F401 - ensure models are registered
 from app.api import auth, dashboard, analyzer, simulations, training, threats, users
 from app.api import bulk_analyzer, ai_campaigns, ai_risk_prediction
+from app.routes import soc
 
 Base.metadata.create_all(bind=engine)
 
@@ -31,6 +32,7 @@ app.include_router(users.router)
 app.include_router(bulk_analyzer.router)
 app.include_router(ai_campaigns.router)
 app.include_router(ai_risk_prediction.router)
+app.include_router(soc.router)
 
 
 @app.get("/")

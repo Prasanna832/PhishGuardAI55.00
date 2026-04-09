@@ -100,4 +100,10 @@ export const riskPredictionAPI = {
   predict: (data) => api.post('/ai/predict-risk', data),
 }
 
+export const socAPI = {
+  generateLogs: (data) => api.post('/generate-logs', data),
+  analyzeLog: (log) => api.post('/analyze-log', log),
+  analyzeBatch: (logs) => api.post('/analyze-batch', { logs }),
+}
+
 export default api

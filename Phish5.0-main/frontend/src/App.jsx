@@ -15,6 +15,7 @@ import AIRiskPrediction from './pages/AIRiskPrediction'
 import ThreatIntelligenceMap from './pages/ThreatIntelligenceMap'
 import CommunityThreats from './pages/CommunityThreats'
 import Billing from './pages/Billing'
+import AgenticSOC from './pages/AgenticSOC'
 import AdminLogin from './pages/AdminLogin'
 import AdminLayout from './layouts/AdminLayout'
 import AdminCommunityThreats from './pages/admin/AdminCommunityThreats'
@@ -78,6 +79,7 @@ export default function App() {
           <Route path="/threat-map" element={<ProtectedRoute><ThreatIntelligenceMap /></ProtectedRoute>} />
           <Route path="/threats" element={<ProtectedRoute><CommunityThreats /></ProtectedRoute>} />
           <Route path="/billing" element={<ProtectedRoute><Billing /></ProtectedRoute>} />
+          <Route path="/agentic-soc" element={<ProtectedRoute><AgenticSOC /></ProtectedRoute>} />
           
           {/* Admin Routes */}
           <Route path="/admin-login" element={<PublicRoute><AdminLogin /></PublicRoute>} />
