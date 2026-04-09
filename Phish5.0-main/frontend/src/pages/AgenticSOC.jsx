@@ -122,6 +122,8 @@ export default function AgenticSOC() {
     }
   }, [feed])
 
+  const tableRows = analyzing ? Array.from({ length: 6 }, (_, index) => ({ key: `skeleton-${index}` })) : results
+
   return (
     <div className="space-y-6 pb-8">
       <div className="relative overflow-hidden rounded-2xl border border-cyan-500/30 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-purple-500/10 p-6 backdrop-blur-xl">
@@ -223,10 +225,10 @@ export default function AgenticSOC() {
                 </tr>
               </thead>
               <tbody>
-                {(analyzing ? Array.from({ length: 6 }) : results).map((row, index) => {
+                {tableRows.map((row, index) => {
                   if (analyzing) {
                     return (
-                      <tr key={`skeleton-${index}`} className="border-t border-white/5">
+                      <tr key={row.key} className="border-t border-white/5">
                         <td className="px-3 py-3" colSpan={5}><div className="h-4 w-full animate-pulse rounded bg-white/10" /></td>
                       </tr>
                     )

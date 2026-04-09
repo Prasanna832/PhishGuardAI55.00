@@ -1,5 +1,5 @@
 import random
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from sqlalchemy.orm import Session
 
@@ -9,7 +9,7 @@ from app.utils.soc_catalog import ACTIONS, COUNTRIES, MALICIOUS_IPS, NORMAL_RESO
 
 
 def _random_timestamp() -> datetime:
-    now = datetime.utcnow().replace(second=0, microsecond=0)
+    now = datetime.now(timezone.utc).replace(second=0, microsecond=0)
     return now - timedelta(minutes=random.randint(0, 720))
 
 
