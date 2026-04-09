@@ -7,7 +7,7 @@ from app.database import Base
 
 
 class SOCLog(Base):
-    __tablename__ = "logs"
+    __tablename__ = "soc_logs"
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, nullable=False, index=True)
@@ -23,10 +23,10 @@ class SOCLog(Base):
 
 
 class SOCAnalysisResult(Base):
-    __tablename__ = "analysis_results"
+    __tablename__ = "soc_analysis_results"
 
     id = Column(Integer, primary_key=True, index=True)
-    log_id = Column(Integer, ForeignKey("logs.id"), nullable=False, index=True)
+    log_id = Column(Integer, ForeignKey("soc_logs.id"), nullable=False, index=True)
     status = Column(String, nullable=False, index=True)
     risk_score = Column(Integer, nullable=False)
     reason = Column(String, nullable=False)

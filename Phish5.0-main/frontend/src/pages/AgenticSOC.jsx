@@ -11,6 +11,8 @@ const STATUS_COLORS = {
 }
 
 const PIE_COLORS = ['#10b981', '#f59e0b', '#ef4444']
+const FEED_UPDATE_INTERVAL_MS = 450
+const MAX_FEED_ITEMS = 30
 
 function formatLog(log) {
   const ts = new Date(log.timestamp)
@@ -106,11 +108,11 @@ export default function AgenticSOC() {
     const interval = setInterval(() => {
       setFeed((current) => {
         if (feedIndex >= results.length) return current
-        const next = [...current, results[feedIndex]].slice(-30)
+        const next = [...current, results[feedIndex]].slice(-MAX_FEED_ITEMS)
         return next
       })
       setFeedIndex((index) => (index < results.length ? index + 1 : index))
-    }, 450)
+    }, FEED_UPDATE_INTERVAL_MS)
     return () => clearInterval(interval)
   }, [results, feedIndex])
 

@@ -16,7 +16,7 @@ def _random_timestamp() -> datetime:
 def generate_synthetic_logs(count: int) -> list[LogInput]:
     generated: list[LogInput] = []
 
-    for _ in range(count):
+    while len(generated) < count:
         user = random.choice(USERS)
         action = random.choice(ACTIONS)
         suspicious_mode = random.random() < 0.3
@@ -55,6 +55,8 @@ def generate_synthetic_logs(count: int) -> list[LogInput]:
         if action == "login" and not success and random.random() < 0.45:
             burst_count = random.randint(1, 2)
             for burst in range(burst_count):
+                if len(generated) >= count:
+                    break
                 generated.append(
                     LogInput(
                         username=user,
@@ -67,7 +69,7 @@ def generate_synthetic_logs(count: int) -> list[LogInput]:
                     )
                 )
 
-    return generated[:count]
+    return generated
 
 
 def persist_log(db: Session, log: LogInput) -> SOCLog:
