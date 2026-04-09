@@ -86,3 +86,23 @@ def get_threat_stats(
 @router.get("/categories")
 def get_categories():
     return {"categories": PHISHING_CATEGORIES}
+
+
+@router.get("/{report_id}/analyze")
+def analyze_threat_report(
+    report_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    from fastapi import HTTPException
+    from app.services.ai_service import analyze_email
+
+    report = db.query(ThreatReport).filter(ThreatReport.id == report_id).first()
+    if not report:
+        raise HTTPException(status_code=404, detail="Threat report not found")
+
+    # Use the AI service to analyze the email content
+    # The analyze_email function returns a robust JSON including classification, risk_level, explanation, and prevention_advice
+    analysis_result = analyze_email(report.email_content, mode="enterprise")
+    
+    return analysis_result

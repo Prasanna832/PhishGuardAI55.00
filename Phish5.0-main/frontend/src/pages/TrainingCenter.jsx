@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { BookOpen, CheckCircle, Clock, Award, ChevronDown, ChevronUp, Zap } from 'lucide-react'
+import { BookOpen, CheckCircle, Clock, Award, ChevronDown, ChevronUp, Zap, AlertTriangle, Shield, Crosshair } from 'lucide-react'
 import { trainingAPI } from '../services/api'
 
 function TrainingCard({ training, onComplete }) {
@@ -70,27 +70,35 @@ function TrainingCard({ training, onComplete }) {
               exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden"
             >
-              <div className="mt-4 space-y-3 pt-4 border-t border-white/5">
+              <div className="mt-5 space-y-4 pt-4 border-t border-white/5">
                 {training.mistake_description && (
-                  <div>
-                    <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">What Happened</div>
-                    <p className="text-sm text-gray-300">{training.mistake_description}</p>
+                  <div className="bg-red-500/5 border border-red-500/20 rounded-lg p-4">
+                    <div className="flex items-center gap-2 text-red-400 font-semibold mb-2">
+                       <Zap size={16} /> Action Analysis
+                    </div>
+                    <p className="text-sm text-gray-300 leading-relaxed font-mono">{training.mistake_description}</p>
                   </div>
                 )}
+                
                 {training.why_dangerous && (
-                  <div>
-                    <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">Why It's Dangerous</div>
-                    <p className="text-sm text-gray-300">{training.why_dangerous}</p>
+                  <div className="bg-orange-500/5 border border-orange-500/20 rounded-lg p-4">
+                    <div className="flex items-center gap-2 text-orange-400 font-semibold mb-2">
+                       <AlertTriangle size={16} /> Threat Assessment
+                    </div>
+                    <p className="text-sm text-gray-300 leading-relaxed">{training.why_dangerous}</p>
                   </div>
                 )}
+
                 {training.prevention_tips && (
-                  <div>
-                    <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">Prevention Tips</div>
-                    <div className="space-y-1">
+                  <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-lg p-4">
+                    <div className="flex items-center gap-2 text-emerald-400 font-semibold mb-3">
+                       <Shield size={16} /> Prevention Protocol
+                    </div>
+                    <div className="space-y-2">
                       {training.prevention_tips.split('\n').filter(Boolean).map((tip, i) => (
-                        <div key={i} className="flex items-start gap-2 text-sm text-gray-300">
-                          <CheckCircle size={12} className="text-emerald-400 mt-0.5 flex-shrink-0" />
-                          {tip}
+                        <div key={i} className="flex items-start gap-3 text-sm text-gray-300 bg-dark-800/50 p-3 rounded border border-white/5">
+                          <CheckCircle size={14} className="text-emerald-400 mt-0.5 flex-shrink-0" />
+                          <span className="leading-snug">{tip}</span>
                         </div>
                       ))}
                     </div>
@@ -103,14 +111,14 @@ function TrainingCard({ training, onComplete }) {
                     disabled={completing}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
-                    className="btn-primary w-full flex items-center justify-center gap-2 mt-4"
+                    className="w-full flex items-center justify-center gap-2 mt-6 px-4 py-3 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white font-bold rounded-lg shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] transition-all"
                   >
                     {completing ? (
-                      <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
                       <>
-                        <Award size={16} />
-                        Mark as Complete
+                        <Award size={18} />
+                        Acknowledge & Complete Bootcamp Module
                       </>
                     )}
                   </motion.button>
@@ -157,8 +165,13 @@ export default function TrainingCenter() {
 
   return (
     <div>
-      <h1 className="page-header">Security Training Center</h1>
-      <p className="page-subtitle">AI-generated personalized security awareness training</p>
+      <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
+        <Crosshair className="text-cyan-400" size={32} />
+        AI Security Bootcamp
+      </h1>
+      <p className="text-gray-400 mb-8 border-b border-white/10 pb-6">
+        Personalized incident reports and security awareness training based on your simulated performance.
+      </p>
 
       {/* Stats */}
       {stats && (

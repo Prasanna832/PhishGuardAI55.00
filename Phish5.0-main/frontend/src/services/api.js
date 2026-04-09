@@ -70,6 +70,7 @@ export const threatsAPI = {
   list: () => api.get('/threat-reports'),
   getStats: () => api.get('/threat-reports/stats'),
   getCategories: () => api.get('/threat-reports/categories'),
+  analyze: (id) => api.get(`/threat-reports/${id}/analyze`),
 }
 
 // Users
@@ -77,6 +78,8 @@ export const usersAPI = {
   getMe: () => api.get('/users/me'),
   list: () => api.get('/users'),
   getRisk: (id) => api.get(`/users/${id}/risk`),
+  getAllRisk: () => api.get('/users/risk-overview'),
+  evaluateUser: (id) => api.get(`/users/${id}/evaluate`),
 }
 
 // Bulk Email Analyzer

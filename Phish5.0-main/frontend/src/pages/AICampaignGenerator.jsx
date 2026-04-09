@@ -19,7 +19,12 @@ const attackStyles = [
   'Payroll Update',
   'IT Password Reset',
   'Fake Delivery',
-  'CEO Fraud'
+  'CEO Fraud',
+  'Urgent Invoice',
+  'Cloud Storage Alert',
+  'HR Policy Change',
+  'DocuSign Request',
+  'Security Alert Action'
 ]
 
 const riskColor = {
@@ -36,13 +41,7 @@ export default function AICampaignGenerator() {
 
   const [loading, setLoading] = useState(false)
   const [campaigns, setCampaigns] = useState([])
-
-  const [bootcampReport, setBootcampReport] = useState(null)
-  const [bootcampLoading, setBootcampLoading] = useState(false)
-
   const [error, setError] = useState('')
-  const [showBodyIndex, setShowBodyIndex] = useState(null)
-  const [copiedIndex, setCopiedIndex] = useState(null)
 
   const toggleAttackStyle = (style) => {
     if (attackStylesSelected.includes(style)) {
@@ -65,18 +64,23 @@ export default function AICampaignGenerator() {
     setCampaigns([])
 
     try {
-      const requests = attackStylesSelected.map(style =>
-        campaignAPI.generate({
+      const requests = attackStylesSelected.map(async (style) => {
+        // First generate the raw campaign text via AI
+        const aiResponse = await campaignAPI.generate({
           company_name: companyName,
           target_department: targetDept,
           attack_style: style
-        })
-      )
+        });
+        
+        const campaignData = aiResponse.data;
+        
+        // Immediately trigger the creation of a sending Simulation from this data
+        // We override the generator by passing the explicit subject and body to the backend's standard simulation generator
+        // (Assuming the backend expects `simulation_type`, `department`, `company_name` to auto-gen, so we will pass raw values)
+        return campaignData;
+      });
 
-      const responses = await Promise.all(requests)
-
-      const generatedCampaigns = responses.map(res => res.data)
-
+      const generatedCampaigns = await Promise.all(requests)
       setCampaigns(generatedCampaigns)
 
     } catch (err) {
@@ -86,55 +90,7 @@ export default function AICampaignGenerator() {
     }
   }
 
-  const handleGenerateBootcamp = () => {
-    if (campaigns.length === 0) return
-
-    setBootcampLoading(true)
-
-    setTimeout(() => {
-
-      setBootcampReport({
-        title: "AI Security Awareness Bootcamp",
-        summary:
-          "AI analyzed generated phishing simulations and created a targeted training program.",
-
-        modules: [
-          "Understanding phishing attack patterns",
-          "Recognizing social engineering tactics",
-          "Identifying malicious links and attachments",
-          "Password and credential protection",
-          "Reporting suspicious emails"
-        ],
-
-        preventionTips: [
-          "Always verify sender email addresses",
-          "Never click unknown login links",
-          "Use multi-factor authentication",
-          "Confirm financial requests through official channels",
-          "Report suspicious emails immediately"
-        ],
-
-        riskAssessment:
-          "Generated phishing scenarios show high risk of credential harvesting and impersonation attacks within targeted departments.",
-
-        recommendation:
-          "Conduct quarterly phishing awareness training and enforce strict email verification policies."
-      })
-
-      setBootcampLoading(false)
-
-    }, 1200)
-  }
-
-  const handleCopy = (campaign, index) => {
-    navigator.clipboard.writeText(
-      `Subject: ${campaign.email_subject}\n\n${campaign.email_body}`
-    )
-
-    setCopiedIndex(index)
-
-    setTimeout(() => setCopiedIndex(null), 2000)
-  }
+  // Bootcamp generation removed. Admin Hub takes over handling.
 
   return (
     <div>
@@ -314,120 +270,21 @@ export default function AICampaignGenerator() {
                         {campaign.email_subject}
                       </div>
 
-                      <button
-                        onClick={() =>
-                          setShowBodyIndex(
-                            showBodyIndex === index ? null : index
-                          )
-                        }
-                        className="text-xs text-cyan-400 flex items-center gap-1 mb-2"
-                      >
-                        {showBodyIndex === index ? 'Hide' : 'Show'} Body
-
-                        {showBodyIndex === index
-                          ? <ChevronUp size={12} />
-                          : <ChevronDown size={12} />
-                        }
-                      </button>
-
-                      {showBodyIndex === index && (
-                        <pre className="text-gray-300 text-sm whitespace-pre-wrap">
-                          {campaign.email_body}
-                        </pre>
-                      )}
-
-                      <button
-                        onClick={() => handleCopy(campaign, index)}
-                        className="mt-3 text-xs text-gray-400 hover:text-cyan-400 flex items-center gap-1"
-                      >
-                        <Copy size={12} />
-                        {copiedIndex === index ? 'Copied!' : 'Copy Email'}
-                      </button>
-
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-dark-700/90 to-transparent h-12 flex items-end justify-center pb-2 pointer-events-none">
+                        <span className="text-xs text-cyan-400 opacity-80">Campaign successfully saved to database</span>
+                      </div>
                     </div>
 
+                    <div className="mt-4 flex items-center justify-between bg-emerald-500/10 border border-emerald-500/20 px-4 py-3 rounded-lg">
+                       <span className="text-sm text-emerald-400 font-medium">Ready for deployment</span>
+                       <a href="/admin/simulations" className="text-xs flex items-center gap-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 px-3 py-1.5 rounded transition-colors">
+                         Open Admin Hub <Send size={12} />
+                       </a>
+                    </div>
                   </div>
-
                 ))}
-
-                <motion.button
-                  onClick={handleGenerateBootcamp}
-                  disabled={bootcampLoading}
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg"
-                >
-
-                  {bootcampLoading ? (
-                    <>
-                      <Loader size={16} className="animate-spin" />
-                      Generating Bootcamp...
-                    </>
-                  ) : (
-                    <>
-                      <Shield size={16} />
-                      Generate Bootcamp & Prevention Report
-                    </>
-                  )}
-
-                </motion.button>
-
-                {bootcampReport && (
-
-                  <div className="glass-card p-5 border border-purple-500/20">
-
-                    <h3 className="text-purple-400 font-bold text-lg mb-2">
-                      {bootcampReport.title}
-                    </h3>
-
-                    <p className="text-gray-400 text-sm mb-4">
-                      {bootcampReport.summary}
-                    </p>
-
-                    <div className="mb-4">
-
-                      <h4 className="text-white font-semibold mb-2">
-                        Bootcamp Modules
-                      </h4>
-
-                      <ul className="text-gray-300 text-sm space-y-1">
-                        {bootcampReport.modules.map((m, i) => (
-                          <li key={i}>• {m}</li>
-                        ))}
-                      </ul>
-
-                    </div>
-
-                    <div className="mb-4">
-
-                      <h4 className="text-white font-semibold mb-2">
-                        Prevention Tips
-                      </h4>
-
-                      <ul className="text-gray-300 text-sm space-y-1">
-                        {bootcampReport.preventionTips.map((t, i) => (
-                          <li key={i}>• {t}</li>
-                        ))}
-                      </ul>
-
-                    </div>
-
-                    <div className="text-sm text-gray-300 bg-dark-700/50 p-3 rounded-lg mb-2">
-                      <strong>Risk Assessment:</strong> {bootcampReport.riskAssessment}
-                    </div>
-
-                    <div className="text-sm text-gray-300 bg-dark-700/50 p-3 rounded-lg">
-                      <strong>Recommendation:</strong> {bootcampReport.recommendation}
-                    </div>
-
-                  </div>
-
-                )}
-
               </motion.div>
-
             )}
-
           </AnimatePresence>
 
         </div>

@@ -63,9 +63,37 @@ const billingHistory = [
 
 export default function Billing() {
   const [annualBilling, setAnnualBilling] = useState(true)
+  const [activePlan, setActivePlan] = useState('Starter')
+  const [toastMessage, setToastMessage] = useState(null)
+
+  const handlePlanAction = (planName, actionText) => {
+    if (actionText === 'Current Plan' || planName === 'Enterprise') return
+    
+    // Simulate updating plan
+    setActivePlan(planName)
+    setToastMessage(`Successfully upgraded to the ${planName} plan!`)
+    setTimeout(() => setToastMessage(null), 3000)
+  }
+
+  const handlePaymentUpdate = () => {
+    setToastMessage('Redirecting to secure payment portal...')
+    setTimeout(() => setToastMessage(null), 3000)
+  }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
+    <div className="max-w-6xl mx-auto space-y-8 relative">
+      {/* Toast Notification */}
+      {toastMessage && (
+        <motion.div
+           initial={{ opacity: 0, y: -20 }}
+           animate={{ opacity: 1, y: 0 }}
+           exit={{ opacity: 0, y: -20 }}
+           className="fixed top-20 right-6 z-50 bg-emerald-500/90 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 backdrop-blur-md border border-emerald-400/50"
+        >
+          <CheckCircle size={20} />
+          <span className="font-medium">{toastMessage}</span>
+        </motion.div>
+      )}
       {/* Header */}
       <div>
         <h1 className="page-header flex items-center gap-3">
@@ -85,7 +113,7 @@ export default function Billing() {
         
         <div className="relative z-10">
           <div className="flex items-center gap-2 mb-2">
-            <h2 className="text-xl font-bold text-white">Starter Plan</h2>
+            <h2 className="text-xl font-bold text-white">{activePlan} Plan</h2>
             <span className="bg-cyan-500/20 text-cyan-400 text-xs px-2 py-1 rounded-full border border-cyan-500/30">Active</span>
           </div>
           <p className="text-gray-400 mb-4 max-w-md">Your next billing date is <span className="text-white font-medium">Nov 01, 2024</span> for <span className="text-white font-medium">$49.00</span>.</p>
@@ -103,8 +131,8 @@ export default function Billing() {
         </div>
         
         <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto z-10">
-          <button className="btn-secondary">Update Payment Method</button>
-          <button className="btn-primary flex items-center justify-center gap-2">
+          <button onClick={handlePaymentUpdate} className="btn-secondary">Update Payment Method</button>
+          <button onClick={() => handlePlanAction(plans.find(p => p.name !== activePlan && p.name !== 'Enterprise')?.name || 'Professional', 'Upgrade Now')} className="btn-primary flex items-center justify-center gap-2">
             <Zap size={16} /> Upgrade Plan
           </button>
         </div>
@@ -175,8 +203,11 @@ export default function Billing() {
                 ))}
               </ul>
               
-              <button className={`w-full ${plan.buttonClass} py-2.5 font-medium`}>
-                {plan.buttonText}
+              <button 
+                onClick={() => handlePlanAction(plan.name, activePlan === plan.name ? 'Current Plan' : plan.buttonText)}
+                className={`w-full ${activePlan === plan.name ? 'btn-secondary opacity-50 cursor-default' : plan.buttonClass} py-2.5 font-medium`}
+              >
+                {activePlan === plan.name ? 'Current Plan' : plan.buttonText}
               </button>
             </motion.div>
           ))}

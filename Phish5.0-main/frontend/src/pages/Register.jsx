@@ -164,6 +164,18 @@ export default function Register() {
               Sign In
             </Link>
           </p>
+
+          <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/5">
+            <Link to="/admin-login" className="flex items-center gap-2 text-xs text-gray-500 hover:text-emerald-400 transition-colors">
+              <Shield size={14} className="text-emerald-500/70" />
+              Admin Access
+            </Link>
+            
+            <div className="flex items-center gap-1.5 text-xs text-gray-500">
+              <Lock size={12} className="text-cyan-500/70" />
+              Enterprise Security
+            </div>
+          </div>
         </div>
       </motion.div>
     </div>

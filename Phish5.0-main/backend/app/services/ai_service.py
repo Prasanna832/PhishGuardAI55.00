@@ -317,3 +317,61 @@ def _fallback_training(simulation_type: str, mistake_description: str) -> dict:
                         "3. Contact senders through official channels when suspicious\n\n"
                         "**Remember:** Think before you click!",
     }
+
+
+def evaluate_employee(name: str, department: str, clicks: int, reports: int, completed_trainings: int, risk_score: float) -> dict:
+    client = _get_client()
+
+    prompt = f"""You are an HR Security Administrator evaluating an employee's cyber behavior.
+
+Employee: {name}
+Department: {department}
+Phishing links clicked: {clicks}
+Suspicious links reported (correctly): {reports}
+Training modules completed: {completed_trainings}
+Current System Risk Score (0-100, 100 being worst): {risk_score}
+
+Based on these statistics, provide an insightful evaluation of this employee.
+Respond ONLY with a valid JSON object matching the following structure:
+
+{{
+  "classification": "Good Performing|Monitor Closely|Training Needed Critical",
+  "summary": "<2-3 sentence summary of their behavior pattern>",
+  "recommended_actions": ["action 1", "action 2"]
+}}
+"""
+    if client:
+        try:
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.4,
+                max_tokens=500,
+            )
+            raw = response.choices[0].message.content.strip()
+            raw = re.sub(r"^```(?:json)?\s*", "", raw)
+            raw = re.sub(r"\s*```$", "", raw)
+            return json.loads(raw)
+        except Exception as e:
+            print(f"OpenAI error in evaluate_employee: {e}")
+
+    # Fallback heuristic
+    if clicks > reports and clicks > 2:
+        classification = "Training Needed Critical"
+        summary = f"{name} frequently falls for simulated attacks and rarely reports them. Immediate intervention is required."
+        recommended_actions = ["Enroll in mandatory remedial phishing training", "Restrict access privileges until trained"]
+    elif risk_score < 30 and reports >= clicks:
+        classification = "Good Performing"
+        summary = f"{name} demonstrates strong security awareness, frequently reporting suspicious activity."
+        recommended_actions = ["Acknowledge good behavior", "Continue standard quarterly simulations"]
+    else:
+        classification = "Monitor Closely"
+        summary = f"{name} shows inconsistent security behavior with occasional lapses. They benefit from continued targeted training."
+        recommended_actions = ["Increase frequency of mild simulations", "Highlight specific phishing patterns in next training module"]
+
+    return {
+        "classification": classification,
+        "summary": summary,
+        "recommended_actions": recommended_actions
+    }
+

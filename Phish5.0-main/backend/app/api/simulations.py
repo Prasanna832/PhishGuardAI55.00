@@ -183,7 +183,17 @@ def get_simulation_results(
     total = simulation.total_sent
     clicked = simulation.total_clicked
     reported = simulation.total_reported
-    ignored = total - clicked - reported
+    
+    # Allow manual admin tests to register as an effective sent count
+    effective_total = max(total, clicked + reported)
+    ignored = max(0, effective_total - clicked - reported)
+
+    click_rate = 0.0
+    report_rate = 0.0
+
+    if effective_total > 0:
+        click_rate = round((clicked / effective_total) * 100, 1)
+        report_rate = round((reported / effective_total) * 100, 1)
 
     return SimulationResults(
         simulation_id=simulation_id,
@@ -191,6 +201,6 @@ def get_simulation_results(
         clicked=clicked,
         reported=reported,
         ignored=ignored,
-        click_rate=round((clicked / max(total, 1)) * 100, 1),
-        report_rate=round((reported / max(total, 1)) * 100, 1),
+        click_rate=click_rate,
+        report_rate=report_rate,
     )
