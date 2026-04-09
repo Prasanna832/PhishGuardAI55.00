@@ -23,7 +23,7 @@ def generate_synthetic_logs(count: int) -> list[LogInput]:
         timestamp = _random_timestamp()
 
         if suspicious_mode and random.random() < 0.5:
-            timestamp = timestamp.replace(hour=random.randint(0, 4), minute=random.randint(0, 59))
+            timestamp = timestamp.replace(hour=random.randint(0, 5), minute=random.randint(0, 59))
 
         if suspicious_mode and random.random() < 0.35:
             ip_address = random.choice(MALICIOUS_IPS)

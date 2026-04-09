@@ -29,7 +29,7 @@ def _analyze(log: LogInput, history: list[LogInput]) -> AnalysisOutput:
         risk_score += MALICIOUS_IP_WEIGHT
         reasons.append(f"IP {log.ip_address} is flagged as malicious")
 
-    if 0 <= log.timestamp.hour <= 4:
+    if 0 <= log.timestamp.hour <= 5:
         risk_score += UNUSUAL_HOUR_WEIGHT
         reasons.append("Activity occurred during unusual hours (00:00-05:00)")
 

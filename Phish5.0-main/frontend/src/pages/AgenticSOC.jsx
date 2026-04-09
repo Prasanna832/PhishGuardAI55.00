@@ -278,8 +278,8 @@ export default function AgenticSOC() {
         <div className="glass-card p-4">
           <h2 className="mb-3 text-lg font-semibold text-white">Live Threat Feed</h2>
           <div ref={feedRef} className="h-64 space-y-2 overflow-y-auto rounded-lg border border-white/10 bg-black/50 p-3 font-mono text-xs">
-            {feed.map((item) => (
-              <div key={`${item.log.id}-${item.analysis.status}`} className={`flex items-center gap-2 ${item.analysis.status === 'Attack' ? 'text-red-300' : item.analysis.status === 'Suspicious' ? 'text-yellow-300' : 'text-emerald-300'}`}>
+            {feed.map((item, index) => (
+              <div key={`${item.log.id}-${item.log.timestamp}-${index}`} className={`flex items-center gap-2 ${item.analysis.status === 'Attack' ? 'text-red-300' : item.analysis.status === 'Suspicious' ? 'text-yellow-300' : 'text-emerald-300'}`}>
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-current" />
                 <span>{formatLog(item.log)}</span>
               </div>
